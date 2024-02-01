@@ -82,4 +82,48 @@ public class ToyLottery {
             }
         }
     }
+
+    private void replaceToyIfExists(Toy newToy) {
+        int newToyId = newToy.getId();
+        Toy existingToy = findToyById(newToyId);
+
+        if (existingToy != null) {
+            // Предложение заменить существующую игрушку
+            System.out.println("Игрушка с ID " + newToyId + " уже существует:");
+            System.out.println(existingToy);
+            System.out.println("Хотите заменить её? (1 - Да, 2 - Нет)");
+
+            try {
+                int replaceChoice = Integer.parseInt(scanner.nextLine());
+
+                if (replaceChoice == 1) {
+                    // Удаляем существующий элемент с заданным id
+                    toysSet.remove(existingToy);
+                    addToy(newToy);
+                    System.out.println("Существующая игрушка с ID " + newToyId + " была заменена.");
+                } else if (replaceChoice == 2) {
+                    System.out.println("Изменение игрушки отменено.");
+                } else {
+                    System.out.println("Некорректный ввод. Пожалуйста, введите 1 (Да) или 2 (Нет).");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка: Некорректный ввод. Пожалуйста, введите 1 (Да) или 2 (Нет).");
+            }
+        }
+    }
+
+    private Toy findToyById(int id) {
+        return toysSet.stream()
+                .filter(toy -> toy.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean checkDuplicate(int id) {
+        return toysSet.stream().noneMatch(t -> t.getId() == id);
+    }
+
+    private void addToy(Toy toy) {
+        toysSet.add(toy);
+    }
 }
