@@ -19,9 +19,13 @@ public class ToyLottery {
     public static void main(String[] args) {
         ToyLottery lottery = new ToyLottery();
         lottery.askNumberOfToys();
+        System.out.println();
         lottery.displayCurrentCollection();
+        System.out.println();
         lottery.askForAddNewToy();
+        System.out.println();
         lottery.displayCurrentCollection();
+        System.out.println();
         lottery.askStartLottery();
         lottery.closeScanner();
     }
