@@ -1,3 +1,6 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -125,5 +128,114 @@ public class ToyLottery {
 
     private void addToy(Toy toy) {
         toysSet.add(toy);
+    }
+
+    public class DisplaySet {
+
+        public static <T> void displaySet(Set<T> set) {
+            System.out.println("Элементы в коллекции:");
+            for (T element : set) {
+                System.out.println(element);
+            }
+        }
+    }
+
+    private void askForAddNewToy() {
+        while (true) {
+            try {
+                System.out.println("Хотите добавить новую игрушку? (1 - Да, 2 - Нет)");
+
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                if (choice == 1) {
+                    acceptToyDataFromUser();
+                } else if (choice == 2) {
+                    System.out.println("Добавление новой игрушки отменено.");
+                    break;
+                } else {
+                    System.out.println("Некорректный ввод. Пожалуйста, введите 1 (Да) или 2 (Нет).");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка: Некорректный ввод. Пожалуйста, введите 1 (Да) или 2 (Нет).");
+            }
+        }
+
+    }
+
+    private void askStartLottery() {
+        while (true) {
+            try {
+                System.out.println("Хотите начать лотерею? (1 - Да, 2 - Нет)");
+
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                if (choice == 1) {
+                    addToysToQueue();
+                    getAndWriteToysToFile();
+                } else if (choice == 2) {
+                    System.out.println("Лотерея игрушек отменена.");
+                    break;
+                } else {
+                    System.out.println("Некорректный ввод. Пожалуйста, введите 1 (Да) или 2 (Нет).");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка: Некорректный ввод. Пожалуйста, введите 1 (Да) или 2 (Нет).");
+            }
+        }
+    }
+
+    private void addToysToQueue() {
+        PriorityQueue<Toy> sortedToysQueue = new PriorityQueue<>(new ToyComparator());
+
+        for (Toy toy : toysSet) {
+            int frequency = toy.getFrequency();
+            for (int i = 0; i < frequency; i++) {
+                sortedToysQueue.add(toy);
+            }
+        }
+
+        toysQueue = sortedToysQueue;
+
+        System.out.println("Подготовка к лотерее завершена!");
+        System.out.println(toysSet);
+    }
+
+    public class ToyComparator implements Comparator<Toy> {
+        @Override
+        public int compare(Toy toy1, Toy toy2) {
+            return Integer.compare(toy2.getFrequency(), toy1.getFrequency());
+        }
+    }
+
+    public void displayCurrentCollection() {
+        DisplaySet.displaySet(toysSet);
+    }
+
+    private void getAndWriteToysToFile() {
+        int count = 10;
+        try (FileWriter writer = new FileWriter("lottery_results.txt")) {
+
+            for (int i = 0; i < count; i++) {
+                Toy toy = getToy();
+                writer.write("Выпавшая игрушка № " + (i + 1) + ": " + (toy != null ? toy.toString() : "null") + "\n");
+            }
+            System.out.println("Результаты успешно записаны в файл lottery_results.txt");
+        } catch (IOException e) {
+            System.out.println("Ошибка при записи в файл: " + e.getMessage());
+        }
+    }
+
+    private Toy getToy() {
+        Toy toy = toysQueue.poll();
+        if (toy != null) {
+            System.out.println("Выпавшая игрушка: " + toy);
+        } else {
+            System.out.println("Очередь пуста.");
+        }
+        return toy;
+    }
+
+    public void closeScanner() {
+        scanner.close();
     }
 }
