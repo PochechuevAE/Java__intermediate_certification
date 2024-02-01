@@ -19,6 +19,11 @@ public class ToyLottery {
     public static void main(String[] args) {
         ToyLottery lottery = new ToyLottery();
         lottery.askNumberOfToys();
+        lottery.displayCurrentCollection();
+        lottery.askForAddNewToy();
+        lottery.displayCurrentCollection();
+        lottery.askStartLottery();
+        lottery.closeScanner();
     }
 
     private void askNumberOfToys() {
